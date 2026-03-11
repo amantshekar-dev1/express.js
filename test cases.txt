@@ -1,0 +1,19 @@
+create user  - http://localhost:5000/api/auth/signup
+{
+    "name": "test2",
+    "email": "test2@example.com",
+    "phone": "9876543210",
+    "password": "password123"
+}
+
+sigin - http://localhost:5000/api/auth/signin
+
+{
+    "identifier": "test2@example.com",
+    "password": "password123"
+}
+
+Pagination: http://localhost:5000/api/items?page=1&limit=5
+Search by Name: http://localhost:5000/api/items?name=Product 1
+Filter by Category: http://localhost:5000/api/items?category=Electronics
+Sorting: http://localhost:5000/api/items?sort=price&order=asc
