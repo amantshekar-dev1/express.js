@@ -1,51 +1,39 @@
-const db = require('../config/db');
+const Item = require('../models/ItemModel');
 
+// Fetches a paginated list of items with optional search/filtering
 const getItems = async (req, res) => {
     try {
-        const { page = 1, limit = 10, name, category, sort = 'created_at', order = 'desc' } = req.query;
+        const { 
+            page = 1, 
+            limit = 10, 
+            name, 
+            category, 
+            sort = 'created_at', 
+            order = 'desc' 
+        } = req.query;
 
-        const offset = (parseInt(page) - 1) * parseInt(limit);
+        // Basic pagination math
         const limitInt = parseInt(limit);
+        const offset = (parseInt(page) - 1) * limitInt;
 
-        // Dynamic query building
-        const query = db('items');
-
-        // Partial search on name
-        if (name) {
-            query.where('name', 'ilike', `%${name}%`);
-        }
-
-        // Filter by category
-        if (category) {
-            query.where('category', category);
-        }
-
-        // Clone query for total count
-        const totalCountQuery = query.clone().clearSelect().clearOrder().count('id as total').first();
-
-        // Applying pagination and sorting
-        const items = await query
-            .orderBy(sort, order)
-            .limit(limitInt)
-            .offset(offset);
-
-        const { total } = await totalCountQuery;
+        // Fetch items from model
+        const { items, total } = await Item.findAll({ 
+            name, category, sort, order, limit: limitInt, offset 
+        });
 
         res.json({
             items,
             pagination: {
-                total: parseInt(total),
-                page: parseInt(page),
-                limit: limitInt,
-                totalPages: Math.ceil(parseInt(total) / limitInt)
+                totalCount: total,
+                currentPage: parseInt(page),
+                limitValue: limitInt,
+                totalPages: Math.ceil(total / limitInt)
             }
         });
-    } catch (error) {
-        console.error('Get items error:', error);
+    } catch (err) {
+        console.error('Fetch Items Error:', err.message);
         res.status(500).json({ message: 'Internal server error' });
     }
 };
 
-module.exports = {
-    getItems
-};
+module.exports = { getItems };

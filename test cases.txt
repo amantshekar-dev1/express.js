@@ -13,6 +13,9 @@ sigin - http://localhost:5000/api/auth/signin
     "password": "password123"
 }
 
+Get Profile: http://localhost:5000/api/auth/profile
+(Requires Authorization: Bearer <token>)
+
 Pagination: http://localhost:5000/api/items?page=1&limit=5
 Search by Name: http://localhost:5000/api/items?name=Product 1
 Filter by Category: http://localhost:5000/api/items?category=Electronics

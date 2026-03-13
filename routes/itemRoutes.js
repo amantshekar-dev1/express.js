@@ -2,6 +2,7 @@ const express = require('express');
 const { query } = require('express-validator');
 const itemController = require('../controllers/itemController');
 const authMiddleware = require('../middleware/auth');
+const validate = require('../middleware/validate');
 
 const router = express.Router();
 
@@ -14,7 +15,6 @@ const getItemsValidation = [
     query('name').optional().trim().notEmpty().withMessage('Search term cannot be empty')
 ];
 
-// Protect this route with authMiddleware
-router.get('/', authMiddleware, getItemsValidation, itemController.getItems);
+router.get('/', authMiddleware, getItemsValidation, validate, itemController.getItems);
 
 module.exports = router;
